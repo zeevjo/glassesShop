@@ -1,0 +1,3 @@
+INSERT INTO Lenses (Lenses.Lens_Coating_id,Lenses.Price,Lenses.Thickness_Id,Lenses.Cylinder_Id,Lenses.Prescription_Strength_Id,Lenses.Brand_Id,Lenses.Product_Image)
+
+
