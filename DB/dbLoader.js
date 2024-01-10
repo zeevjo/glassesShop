@@ -60,7 +60,8 @@ const insert_inventory = async () => {
   const pool = await poolPromise;
   const result = await pool
     .request()
-    .execute("INSERT-Inventory");
+    // .execute("INSERT-Inventory"); :localhost
+    .execute("Insert-Into-Inventory");
   console.log("in insert_inventory",result);
   return result;
 };

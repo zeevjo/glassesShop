@@ -25,7 +25,7 @@ const orderFromManufacturerIfNotInStock = async (
             "orderFromManufacturerIfNotInStock"
           );
           console.log(
-            `Executed orderFromManufacturerIfNotInStock for Id ${Id}`
+            ` orderFromManufacturerIfNotInStock for Id: ${Id}`
           );
           console.log("result", result);
           return result;

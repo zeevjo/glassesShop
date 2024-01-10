@@ -27,11 +27,11 @@ try {
   let db_response_insert_inventory = await myRepository.insert_inventory();
   console.log("Router posted data on db", db_response_insert_inventory);
 
-  let loadLensestoInvntory = await myRepository2.addMultiRowsToInventory( 2 ,1 ,84688  );
-  console.log('loadLensestoInvntory',loadLensestoInvntory);
+  // let loadLensestoInvntory = await myRepository2.addMultiRowsToInventory( 2 ,1 ,84688  );
+  // console.log('loadLensestoInvntory',loadLensestoInvntory);
 
-  let loadContactLensesInvntory = await myRepository2.addMultiRowsToInventory(3 ,1, 24200 );
-  console.log('loadLensestoInvntory',loadContactLensesInvntory);
+  // let loadContactLensesInvntory = await myRepository2.addMultiRowsToInventory(3 ,1, 24200 );
+  // console.log('loadLensestoInvntory',loadContactLensesInvntory);
 
 
   console.log("db was loaded successfully");
