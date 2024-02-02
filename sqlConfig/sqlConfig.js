@@ -21,7 +21,6 @@ const sqlConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PWD,
   database: process.env.DB_NAME,
-  //server: process.env.DB_SERVER_NAME,
   server: process.env.DB_SERVER_NAME,
   port: 1433,
   pool: {
@@ -37,7 +36,21 @@ const sqlConfig = {
   },
 };
 
-
 const poolPromise = new mssql.ConnectionPool(sqlConfig).connect();
+
+
+/**
+ * log connection to db status
+ */
+async function connectToDBTester(poolPromise) {
+  try {
+    const pool = await poolPromise;
+    console.log("Connected to DB Successfully");
+  } catch (error) {
+    console.error("Database Connection Failed!", error);
+  }
+}
+
+connectToDBTester(poolPromise);
 
 module.exports = poolPromise;

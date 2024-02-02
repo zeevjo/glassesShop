@@ -15,9 +15,6 @@ const poolPromise = require("./sqlConfig/sqlConfig");
 
 const root = require("path").join(__dirname, "build");
 app.use(express.static(root));
-// app.get("*", cors(), (req, res) => {
-//     res.sendFile('index.html', { root });
-// })
 
 //=========================
 const SignUpRoute = require("./routes/SignUpRoute");
@@ -72,6 +69,11 @@ app.use("/mail", mailTest);
 
 //========================
 
+const authenticated = require("./routes/authenticatedRoutes");
+app.use("/authenticated", authenticated);
+
+//========================
+
 //test to make sure the authenticated workes
 const x = require("./routes/test");
 const { log } = require("console");
@@ -86,6 +88,7 @@ app.get("/tttt", (req, res) => {
 app.get("/testdb", async (req, res) => {
   const pool = await poolPromise;
 
+  console.log("pool", pool);
   const getCarById = async () => {
     return new Promise(async (resolve, reject) => {
         try {

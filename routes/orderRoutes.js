@@ -51,7 +51,7 @@ const User_Roles = {
 
     const clientUser = await getUserByUserName(req);
     console.log("clientUser",clientUser);
-    let responseFromDb = await myRepository.order(req, orderType.inHose, clientUser);
+    let responseFromDb = await myRepository.order(req, orderType.inHose, clientUser, decodedToken.User_Name);
 
     res.json(responseFromDb);
   }  else {

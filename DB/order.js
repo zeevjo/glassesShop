@@ -13,33 +13,57 @@ const { DeleteCartItemsByCartId } = require("./DeleteCartItemsByCartId");
 const {
   UpdateItemQuantityInInventory,
 } = require("./UpdateItemQuantityInInventory");
-const {checkIfItemsAreInstock} = require('./checkIfItemsAreInstock')
+const { checkIfItemsAreInstock } = require("./checkIfItemsAreInstock");
 const {
   addRowToInventory,
   addMultiRowsToInventory,
 } = require("./addRowToInventory");
-const {orderFromManufacturerIfNotInStock} = require('./orderFromManufacturerIfNotInStock')
+const {
+  orderFromManufacturerIfNotInStock,
+} = require("./orderFromManufacturerIfNotInStock");
+const {getEmployeeDetailsByUsername} = require('./getEmployeeDetailsByUsername')
 // const orderType = require('../constants/test');
 
-const order = async (req, orderType, clientUser) => {
+const order = async (req, orderType, clientUser, employeeUserName) => {
   //get decode user info from jwt token
   const token = getTokenFromHeaders(req);
   const decodedToken = jwt.decode(token);
 
   //get the user from db by user name
   req.body.User_Name = decodedToken.User_Name;
-  const user = await getUserByUserName(req);
+  const clintUser = await getUserByUserName(req);
 
+
+
+  if (employeeUserName) {
+    try {
+      // const poolForEmployee = await poolPromise;
+      // var resultForEmployee = await poolForEmployee
+      //   .request()
+      //   .input("User_Name", mssql.NVarChar, employeeUserName)
+      //   .execute("getUserByUserName");
+
+      var resultForEmployee = await getEmployeeDetailsByUsername(employeeUserName)
+    } catch (error) {
+      console.log("erorr", error);
+    }
+  }
+
+
+  console.log("resultForEmployee", resultForEmployee);
   const orderInfo = {
     Id: clientUser.Id,
     Order_Type_Id: orderType,
     Payment_Method_Id: req.body.Payment_Method_Type_Id,
     Payment_Status_Id: req.body.Payment_Status,
+    EMPLOYEE_Id: resultForEmployee?.Id || null
   };
-
+  console.log("orderInfo", orderInfo);
   //get all items from cart
-  let allCartItems = await getAllItemsInCart(req, //req.body.User_Name
-  clientUser.User_Name);
+  let allCartItems = await getAllItemsInCart(
+    req, //req.body.User_Name
+    clientUser.User_Name
+  );
 
   //allCartItems: an array of objscts, each obj has full data of the item
   console.log("allCartItems", allCartItems);
@@ -63,23 +87,30 @@ const order = async (req, orderType, clientUser) => {
     arrayOfProductsItemIdFromInventory
   );
 
-  const instockResults  = await checkIfItemsAreInstock(
+  const instockResults = await checkIfItemsAreInstock(
     arrayOfProductsItemIdFromInventory
   );
-  console.log("instockResults ", instockResults );
+  console.log("instockResults ", instockResults);
 
-  const orderMissingItemsInStock = await orderFromManufacturerIfNotInStock(instockResults);
+  const orderMissingItemsInStock = await orderFromManufacturerIfNotInStock(
+    instockResults
+  );
   console.log("orderMissingItemsInStock", orderMissingItemsInStock);
 
 
+  console.log("orderInfo.EMPLOYEE_Id", orderInfo.EMPLOYEE_Id);
   const pool = await poolPromise;
   const result = await pool
     .request()
-    .input("User_Id", mssql.Int, //orderInfo.Id
-    orderInfo.Id)
+    .input(
+      "User_Id",
+      mssql.Int, //orderInfo.Id
+      orderInfo.Id
+    )
     .input("Order_Type_Id", mssql.Int, orderInfo.Order_Type_Id)
     .input("Payment_Method_Id", mssql.Int, orderInfo.Payment_Method_Id)
     .input("Payment_Status_Id", mssql.Int, orderInfo.Payment_Status_Id)
+    .input("Employee_Id", mssql.Int, orderInfo.EMPLOYEE_Id)
     //.input("Quantity", mssql.Int, orderInfo.Payment_Status_Id)
     .execute("order");
 
@@ -99,7 +130,7 @@ const order = async (req, orderType, clientUser) => {
   });
 
   //empty user cart
-  let usersCartId = await getCartIdByUserId( orderInfo.Id);
+  let usersCartId = await getCartIdByUserId(orderInfo.Id);
   console.log("usersCartId", usersCartId);
 
   //i got the users cart id now make a sp

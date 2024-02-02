@@ -127,7 +127,7 @@ const addItemToCart = async (req, itemType, itemId, User_Name) => {
     return result1.recordsets[0];
   } else {
     // make a cart for user
-    createUsaerCart(user);
+    const newCart = await createUsaerCart(user);
 
     // get the new cart id
     const hasCart = await checkIfUserHasCart(user);

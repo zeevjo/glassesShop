@@ -1,112 +1,47 @@
 // const myRepository = require("../DB/colors");
 const express = require("express");
-var nodemailer = require('nodemailer');
+var nodemailer = require("nodemailer");
+var transporter = require("../emailConfig/emailConfig")
 const router = express.Router();
+const htmlTemplates = require("../htmlTemplates/signup");
 require("dotenv").config();
 
-router.get("/", async (req, res) => {
-  const htmlTemplate = `
-  <!DOCTYPE html>
-  <html lang="en">
-  
-  <head>
-    <meta charset="UTF-8">
-    <title>Welcome to Our Platform!</title>
-    <style>
-      /* Add your styles here */
-      body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-      }
-  
-      .container {
-        width: 80%;
-        margin: auto;
-        overflow: hidden;
-      }
-  
-      header {
-        background: #333;
-        color: #fff;
-        padding-top: 30px;
-        min-height: 70px;
-        border-bottom: #ff3300 3px solid;
-      }
-  
-      header h1 {
-        padding: 5px 0;
-        margin: 0;
-      }
-  
-      .content {
-        padding: 20px;
-        background: #fff;
-        min-height: 300px;
-      }
-  
-      footer {
-        padding: 20px;
-        color: #fff;
-        background: #333;
-        text-align: center;
-      }
-    </style>
-  </head>
-  
-  <body>
-    <header>
-      <div class="container">
-        <h1>Welcome to Our Platform!</h1>
-      </div>
-    </header>
-    <div class="container">
-      <div class="content">
-        <h2>Hello, [Username]!</h2>
-        <p>Welcome back to our platform. You have successfully logged in.</p>
-        <p>Current Date: [Current Date]</p>
-        <p>Thank you for choosing our service. If you have any questions or need assistance, feel free to contact us.</p>
-        <p>Best Regards,</p>
-        <p>The Team at [Your Company Name]</p>
-      </div>
-    </div>
-    <footer>
-      <p>&copy; 2023 Your Company. All rights reserved.</p>
-    </footer>
-  </body>
-  
-  </html> 
-  `;
-  var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'glassesshopproject@gmail.com',
-      pass: 'mvaf vgld sdvj qjmu'
-    }
-  });
-
+router.post("/signup", async (req, res) => {
   var mailOptions = {
-    from: 'glassesshopproject@gmail.com',
-    to: 'zevyz3z3@gmail.com',
-    subject: 'Sending Email using Node.js',
-    // text: 'That was easy!'
-    html: htmlTemplate
+    from: process.env.MY_EMAIL_ADDRESS,
+    to: req.body.address,
+    subject: "Welcome to JOSEPH Glasses Shop - Begin Your Stylish Journey!",
+    html: htmlTemplates.sginupWelcomeMail,
   };
 
-  transporter.sendMail(mailOptions, function(error, info){
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
-      res.send(error)
+      res.send(error);
     } else {
-      console.log('Email sent: ' + info.response);
-      res.send(info.response)
+      console.log("Email sent: " + info.response);
+      res.send(info.response);
     }
   });
+});
 
-  
+router.post("/order", async (req, res) => {
+  var mailOptions = {
+    from: process.env.MY_EMAIL_ADDRESS,
+    to: req.body.address,
+    subject: "Welcome to JOSEPH Glasses Shop - Begin Your Stylish Journey!",
+    html: htmlTemplates.orderEmailTemplate,
+  };
 
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      res.send(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      res.send(info.response);
+    }
+  });
 });
 
 module.exports = router;
